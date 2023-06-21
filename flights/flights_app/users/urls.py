@@ -7,7 +7,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
-from flights_app.users.views import UsersViewSet
+from flights_app.users.views import UsersViewSet, me
 
 router = DefaultRouter()
 router.register('', UsersViewSet)
@@ -15,6 +15,7 @@ router.register('', UsersViewSet)
 
 urlpatterns = [
     path('tokens', TokenObtainPairView.as_view()),
-    path('tokens/refresh', TokenRefreshView.as_view())
+    path('tokens/refresh', TokenRefreshView.as_view()),
+    path('me', me)
 ]
 urlpatterns.extend(router.urls)

@@ -11,4 +11,4 @@ class FlightsViewSet(ModelViewSet):
     serializer_class = serializers.FlightSerializer
     queryset = models.Flight.objects.all()
     filterset_class = FlightsFilterSet
-    permission_classes = FlightsPermission
+    permission_classes = (FlightsPermission, )

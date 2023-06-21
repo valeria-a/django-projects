@@ -19,17 +19,6 @@ class UserSerializer(ModelSerializer):
         }
         validators = [UniqueTogetherValidator(User.objects.all(), ['email'])]
 
-
-
-    # class Meta:
-    #     model = User
-    #     fields = ['email', 'first_name', 'last_name', 'password', 'is_staff']
-    #     extra_kwargs = {
-    #         'email': {'required': True},
-    #         'username': {'read_only': True},
-    #     }
-    #     validators = [UniqueTogetherValidator(User.objects.all(), ['email'])]
-
     def create(self, validated_data):
         user = User.objects.create(username=validated_data['email'],
                                    email=validated_data['email'],
