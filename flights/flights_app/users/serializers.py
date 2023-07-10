@@ -3,6 +3,16 @@ from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 from rest_framework.validators import UniqueTogetherValidator
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+
+class ExtendedTokenObtainPairSerializer(TokenObtainPairSerializer):
+    """Customizes JWT default Serializer to add more information about user"""
+
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        return token
 
 
 class UserSerializer(ModelSerializer):

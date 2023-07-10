@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-+m7g$dqh7rf!)9(esnyhs%_2_-m=25@o!op9ppgo+#!@wqbi8e
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.1.134', '127.0.0.1']
 
 
 # Application definition
@@ -41,13 +41,13 @@ INSTALLED_APPS = [
     'django_filters',
     'django_countries',
     'flights_app.apps.FlightsAppConfig',
-    # 'corsheaders',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    # 'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -135,7 +135,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10,
+    'PAGE_SIZE': 3,
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
         # 'rest_framework.authentication.SessionAuthentication',
@@ -150,8 +150,12 @@ SIMPLE_JWT = {
 }
 
 
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:3000",
-# ]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://192.168.1.135:3000",
+    "http://192.168.1.130:3000",
+    "http://192.168.1.129:3000"
+]
 # CORS_ALLOW_ALL_ORIGINS = True
 # APPEND_SLASH = False
