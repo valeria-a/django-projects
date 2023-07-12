@@ -1,3 +1,4 @@
+import asyncio
 import time
 
 import uvicorn
@@ -24,10 +25,18 @@ async def upload():
 
     #Popen(ffmpeg)
 
+@app.get('/api/long')
+async def hello():
+    time.sleep(30)
+    return {'msg': 'Hi', 'id': 1}
+    # return Hello(id=1, msg='Hi')
+
+
 @app.get('/api/hello')
 async def hello():
     # time.sleep(30)
     # return {'msg': 'Hi', 'id': 1}
+    await asyncio.sleep(3)
     return Hello(id=1, msg='Hi')
 
 if __name__ == '__main__':
