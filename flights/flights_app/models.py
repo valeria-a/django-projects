@@ -3,6 +3,23 @@ from django.db import models
 from django.core import validators
 from django_countries.fields import CountryField
 
+# User <-> Profile
+# u: User
+# u.profile_set[0]
+# u.profile
+
+# ForeignKey -> One2Many
+# ManyToMany
+# OneToOne
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(
+        User, on_delete=models.RESTRICT, related_name='profile')
+    address = models.CharField(max_length=256, null=True)
+
+    class Meta:
+        db_table = 'profiles'
 
 class Flight(models.Model):
 
@@ -19,7 +36,8 @@ class Flight(models.Model):
     departure_dt = models.DateTimeField()
     arrival_dt = models.DateTimeField()
 
-    total_seats = models.IntegerField(validators=[validators.MinValueValidator(0), validators.MaxValueValidator(700)])
+    total_seats = models.IntegerField(
+        validators=[validators.MinValueValidator(0), validators.MaxValueValidator(700)])
     seats_left = models.IntegerField(validators=[validators.MinValueValidator(0), validators.MaxValueValidator(700)])
     price = models.FloatField(validators=[validators.MinValueValidator(0)])
 
@@ -29,17 +47,17 @@ class Flight(models.Model):
         db_table = 'flights'
         ordering = ['id']
 
-# class OrderUsers:
-#     pass
+# o = Order()
+# o.flight => Flight => o.flight.seats_left => o.flight.id
+# o.flight_id => int
 
 class Order(models.Model):
 
     flight = models.ForeignKey(Flight, on_delete=models.RESTRICT, related_name='orders')
     user = models.ForeignKey(User, on_delete=models.RESTRICT, related_name='orders')
 
-    # users = models.ManyToManyField(User, through=OrderUsers, related_name='orders')
-
-    seats = models.IntegerField(validators=[validators.MinValueValidator(0), validators.MaxValueValidator(700)])
+    seats = models.IntegerField(
+        validators=[validators.MinValueValidator(0), validators.MaxValueValidator(700)])
     order_date = models.DateField(auto_now_add=True)
     total_price = models.FloatField(validators=[validators.MinValueValidator(0)], blank=True, null=False)
 

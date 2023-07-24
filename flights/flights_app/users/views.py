@@ -1,6 +1,7 @@
 import uuid
 
 from django.contrib.auth.models import User
+from django.http import JsonResponse
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -8,7 +9,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from flights_app.users.serializers import UserSerializer, ExtendedTokenObtainPairSerializer
+from flights_app.users.serializers import UserSerializer, ExtendedTokenObtainPairSerializer, DetailedUserSerializer
 
 from google.oauth2 import id_token
 from google.auth.transport import requests
@@ -17,6 +18,23 @@ from google.auth.transport import requests
 class UsersViewSet(ModelViewSet):
     serializer_class = UserSerializer
     queryset = User.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        # detailed_user_serializer = DetailedUserSerializer(user.profile)
+        # return Response(detailed_user_serializer.data)
+        # ser = SimpleUserSerializer
+        data = {
+            'id': user.id,
+            'email': user.email,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'address': user.profile.address
+        }
+        return JsonResponse(data)
+
 
 
 @api_view(['GET'])
@@ -60,3 +78,8 @@ def google_login(request):
         print(e)
     print(google_jwt)
     return Response()
+
+
+# @api_view(['POST'])
+# def signup(request):
+#     pass
