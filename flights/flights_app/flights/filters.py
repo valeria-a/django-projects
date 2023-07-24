@@ -14,6 +14,7 @@ class FlightsFilterSet(django_filters.FilterSet):
     price = django_filters.RangeFilter(field_name='price')
     cancelled = django_filters.BooleanFilter(field_name='is_cancelled')
 
+    # origin='new york'
     def origin_filter(self, queryset, name, value):
         queryset = queryset.filter(Q(origin_country__iexact=value) |
                                    Q(origin_city__icontains=value) |

@@ -14,6 +14,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         with transaction.atomic():
+            # validated_data['flight']
             flight = Flight.objects.select_for_update().get(id=validated_data['flight'].id)
             if flight.seats_left < validated_data['seats']:
                 raise ValidationError(detail='Not enough seats')
@@ -21,6 +22,9 @@ class OrderSerializer(serializers.ModelSerializer):
             # calculate total price before storing new order
             total_price = flight.price * validated_data['seats']
             order = Order.objects.create(total_price=total_price, **validated_data)
+            # order = Order.objects.create(total_price=total_price,
+            #                              user=validated_data['user'],
+            #                              seats=validated_data['seats'])
 
             # update seats left in flight
             flight.seats_left = flight.seats_left - validated_data['seats']
@@ -69,4 +73,5 @@ class OrderSerializer(serializers.ModelSerializer):
         if flight and flight.seats_left < attrs['seats']:
             raise ValidationError(detail='Not enough seats')
         return attrs
+
 
