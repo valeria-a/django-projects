@@ -18,6 +18,8 @@ class Profile(models.Model):
         User, on_delete=models.RESTRICT, related_name='profile')
     address = models.CharField(max_length=256, null=True)
 
+    img_url = models.CharField(max_length=1024, null=True)
+
     class Meta:
         db_table = 'profiles'
 

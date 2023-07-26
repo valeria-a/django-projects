@@ -1,5 +1,6 @@
 import uuid
 
+import boto3 as boto3
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from rest_framework.decorators import api_view, permission_classes
@@ -23,9 +24,6 @@ class UsersViewSet(ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        # detailed_user_serializer = DetailedUserSerializer(user.profile)
-        # return Response(detailed_user_serializer.data)
-        # ser = SimpleUserSerializer
         data = {
             'id': user.id,
             'email': user.email,
@@ -80,6 +78,11 @@ def google_login(request):
     return Response()
 
 
-# @api_view(['POST'])
-# def signup(request):
-#     pass
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def upload_profile_img(request):
+    # request.user
+    bucket_name = 'edulabs-flights-profile'
+    object_name = f"profile_img_{request.user.id}"
+
+    s3 = boto3.resource('s3')
