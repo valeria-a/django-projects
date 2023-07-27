@@ -1,3 +1,4 @@
+import os.path
 import uuid
 
 import boto3 as boto3
@@ -10,7 +11,8 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from flights_app.users.serializers import UserSerializer, ExtendedTokenObtainPairSerializer, DetailedUserSerializer
+from flights_app.users.serializers import UserSerializer, ExtendedTokenObtainPairSerializer, DetailedUserSerializer, \
+    UserProfileSerializer
 
 from google.oauth2 import id_token
 from google.auth.transport import requests
@@ -39,7 +41,7 @@ class UsersViewSet(ModelViewSet):
 @permission_classes([IsAuthenticated])
 def me(request):
     # you will get here only if the user is already authenticated!
-    user_serializer = UserSerializer(instance=request.user, many=False)
+    user_serializer = UserProfileSerializer(instance=request.user, many=False)
     return Response(data=user_serializer.data)
 
 class ExtendedTokenObtainPairView(TokenObtainPairView):
@@ -81,8 +83,21 @@ def google_login(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def upload_profile_img(request):
-    # request.user
     bucket_name = 'edulabs-flights-profile'
-    object_name = f"profile_img_{request.user.id}"
+    file_stream = request.FILES['file'].file
+    _, ext = os.path.splitext(request.FILES['file'].name)
 
-    s3 = boto3.resource('s3')
+    object_name = f"profile_img_{request.user.id}{ext}"
+
+    try:
+        s3 = boto3.client('s3')
+        # response = s3.upload_file(
+        #         '../requirements.txt', bucket_name, object_name+'.txt')
+        s3.upload_fileobj(file_stream, bucket_name, object_name)
+
+        request.user.profile.img_url = f"https://{bucket_name}.s3.amazonaws.com/{object_name}"
+        request.user.profile.save()
+    except Exception:
+        return Response(status=500)
+
+    return Response()

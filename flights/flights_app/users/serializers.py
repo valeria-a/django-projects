@@ -18,6 +18,16 @@ class ExtendedTokenObtainPairSerializer(TokenObtainPairSerializer):
         return token
 
 
+class UserProfileSerializer(ModelSerializer):
+
+    def to_representation(self, instance):
+        user_repr = super().to_representation(instance)
+        user_repr['img_url'] = instance.profile.img_url
+        return user_repr
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'first_name', 'last_name']
+
 class UserSerializer(ModelSerializer):
 
     password = serializers.CharField(
@@ -28,12 +38,13 @@ class UserSerializer(ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'password', 'first_name', 'last_name', 'address']
+        fields = ['id', 'username', 'email', 'password', 'first_name', 'last_name', 'address', 'profile']
         extra_kwargs = {
             'email': {'required': True},
             'username': {'read_only': True},
         }
         validators = [UniqueTogetherValidator(User.objects.all(), ['email'])]
+        depth = 1
 
     def create(self, validated_data):
         with transaction.atomic():
