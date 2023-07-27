@@ -18,15 +18,26 @@ class ExtendedTokenObtainPairSerializer(TokenObtainPairSerializer):
         return token
 
 
+
 class UserProfileSerializer(ModelSerializer):
 
     def to_representation(self, instance):
         user_repr = super().to_representation(instance)
+        user_repr['address'] = instance.profile.address
         user_repr['img_url'] = instance.profile.img_url
         return user_repr
+
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'first_name', 'last_name']
+
+
+class StaffUserSerializer(UserProfileSerializer):
+
+    def to_representation(self, instance):
+        staff_repr = super().to_representation(instance)
+        staff_repr['date_joined'] = instance.date_joined
+        return staff_repr
 
 class UserSerializer(ModelSerializer):
 

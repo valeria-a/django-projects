@@ -12,7 +12,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from flights_app.users.serializers import UserSerializer, ExtendedTokenObtainPairSerializer, DetailedUserSerializer, \
-    UserProfileSerializer
+    UserProfileSerializer, StaffUserSerializer
 
 from google.oauth2 import id_token
 from google.auth.transport import requests
@@ -37,12 +37,33 @@ class UsersViewSet(ModelViewSet):
 
 
 
+# @api_view(['GET'])
+# # @permission_classes([IsAuthenticated])
+# def me(request):
+#     print(request.user)
+#     if request.user.is_authenticated:
+#         # you will get here only if the user is already authenticated!
+#         user_serializer = UserProfileSerializer(instance=request.user, many=False)
+#         return Response(data=user_serializer.data)
+#     else:
+#         return Response(status=401)
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def me(request):
     # you will get here only if the user is already authenticated!
-    user_serializer = UserProfileSerializer(instance=request.user, many=False)
+    #
+    # if not request.user.is_staff:
+    #     user_serializer = UserProfileSerializer(instance=request.user, many=False)
+    #     return Response(data=user_serializer.data)
+    # else:
+    #     user_serializer = StaffUserSerializer(instance=request.user, many=False)
+    #     return Response(data=user_serializer.data)
+
+    serializer_class = StaffUserSerializer if request.user.is_staff else UserProfileSerializer
+    user_serializer = serializer_class(instance=request.user, many=False)
     return Response(data=user_serializer.data)
+
 
 class ExtendedTokenObtainPairView(TokenObtainPairView):
     # Replace the serializer with your custom

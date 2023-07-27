@@ -14,8 +14,8 @@ router.register('', UsersViewSet)
 
 
 urlpatterns = [
-    # path('tokens', TokenObtainPairView.as_view()),
-    path('tokens', ExtendedTokenObtainPairView.as_view()),
+    # LOGIN
+    path('tokens', TokenObtainPairView.as_view()),
     path('tokens/refresh', TokenRefreshView.as_view()),
     path('me', me),
     path('google-auth', google_login),

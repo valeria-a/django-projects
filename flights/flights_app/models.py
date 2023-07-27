@@ -12,10 +12,13 @@ from django_countries.fields import CountryField
 # ManyToMany
 # OneToOne
 
+#user: User => user.profile
 
 class Profile(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.RESTRICT, related_name='profile')
+    # user = models.ForeignKey(
+    #     User, on_delete=models.RESTRICT, related_name='profile')
     address = models.CharField(max_length=256, null=True)
 
     img_url = models.CharField(max_length=1024, null=True)
