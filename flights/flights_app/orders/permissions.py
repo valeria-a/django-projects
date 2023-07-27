@@ -3,6 +3,7 @@ from rest_framework.permissions import BasePermission, SAFE_METHODS
 
 class OrdersPermission(BasePermission):
     def has_permission(self, request, view):
+        # methods of list, create reach this code
         if view.action == 'list':
             return request.user.is_staff
         return True

@@ -6,4 +6,4 @@ class FlightsPermission(BasePermission):
         if request.method in SAFE_METHODS:
             return True
         else:
-            return request.user and request.user.is_staff
+            return request.user.is_staff

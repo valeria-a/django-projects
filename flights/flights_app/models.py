@@ -48,6 +48,8 @@ class Flight(models.Model):
 
     is_cancelled = models.BooleanField(default=False)
 
+    created_by = models.ForeignKey(User, on_delete=models.RESTRICT, null=True)
+
     class Meta:
         db_table = 'flights'
         ordering = ['id']
