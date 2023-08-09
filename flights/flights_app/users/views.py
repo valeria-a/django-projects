@@ -1,5 +1,6 @@
 import os.path
 import uuid
+from pprint import pprint
 
 import boto3 as boto3
 from django.contrib.auth.models import User
@@ -122,3 +123,39 @@ def upload_profile_img(request):
         return Response(status=500)
 
     return Response()
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def upload_profile_img_url(request):
+    bucket_name = 'edulabs-flights-profile'
+    filename = request.data['filename']
+    _, ext = os.path.splitext(filename)
+
+    object_name = f"profile_img_{request.user.id}_{uuid.uuid4()}{ext}"
+
+    s3 = boto3.client('s3')
+    response = s3.generate_presigned_post(bucket_name, object_name, ExpiresIn=3600)
+    pprint(response)
+
+    # request.user.profile.img_url = f"https://{bucket_name}.s3.amazonaws.com/{object_name}"
+    # request.user.profile.save()
+    return Response(data=response)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def upload_profile_img_done(request):
+    bucket_name = 'edulabs-flights-profile'
+    object_name = request.data['object_name']
+    old_url = request.user.profile.img_url
+
+    request.user.profile.img_url = f"https://{bucket_name}.s3.amazonaws.com/{object_name}"
+    request.user.profile.save()
+
+    s3 = boto3.client('s3')
+
+    old_object_name = old_url.split("/")[-1]
+    s3.delete_object(Bucket='edulabs-flights-profile', Key=old_object_name)
+
+    ser = UserProfileSerializer(request.user)
+    return Response(data=ser.data)

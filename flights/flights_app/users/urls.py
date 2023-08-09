@@ -7,7 +7,8 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
-from flights_app.users.views import UsersViewSet, me, ExtendedTokenObtainPairView, google_login, upload_profile_img
+from flights_app.users.views import UsersViewSet, me, ExtendedTokenObtainPairView, google_login, upload_profile_img, \
+    upload_profile_img_url, upload_profile_img_done
 
 router = DefaultRouter()
 router.register('', UsersViewSet)
@@ -19,6 +20,8 @@ urlpatterns = [
     path('tokens/refresh', TokenRefreshView.as_view()),
     path('me', me),
     path('google-auth', google_login),
-    path('profile/img', upload_profile_img)
+    path('profile/img', upload_profile_img),
+    path('profile/img/presigned', upload_profile_img_url),
+    path('profile/img/done', upload_profile_img_done),
 ]
 urlpatterns.extend(router.urls)

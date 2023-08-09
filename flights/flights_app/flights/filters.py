@@ -8,6 +8,7 @@ class FlightsFilterSet(django_filters.FilterSet):
 
     flight_code = django_filters.CharFilter(lookup_expr='iexact')
     origin = django_filters.CharFilter(method='origin_filter')
+    origin_city = django_filters.CharFilter(field_name='origin_city', lookup_expr='iexact')
     dest = django_filters.CharFilter(method='dest_filter')
     departure = django_filters.DateFromToRangeFilter(field_name='departure_dt')
     arrival = django_filters.DateFromToRangeFilter(field_name='arrival_dt')
