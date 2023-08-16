@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'flights.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'flights',
+        'NAME': 'airlines',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
         'HOST': 'database-1.cgumkpy6seqg.us-east-1.rds.amazonaws.com',
