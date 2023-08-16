@@ -5,3 +5,4 @@ django-filter
 djangorestframework-simplejwt
 django-countries
 django-cors-headers
+boto3
