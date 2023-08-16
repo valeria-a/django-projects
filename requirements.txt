@@ -6,3 +6,5 @@ djangorestframework-simplejwt
 django-countries
 django-cors-headers
 boto3
+google-auth
+requests
