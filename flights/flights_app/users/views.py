@@ -15,6 +15,11 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from flights_app.users.serializers import UserSerializer, ExtendedTokenObtainPairSerializer, DetailedUserSerializer, \
     UserProfileSerializer, StaffUserSerializer
 
+import json
+
+from google.oauth2 import service_account
+from google.cloud import storage
+
 from google.oauth2 import id_token
 from google.auth.transport import requests
 
@@ -62,7 +67,7 @@ def me(request):
     #     return Response(data=user_serializer.data)
 
     serializer_class = StaffUserSerializer if request.user.is_staff else UserProfileSerializer
-    user_serializer = serializer_class(instance=request.user, many=False)
+    user_serializer = serializer_class(instance=request.user, many=False, context={'request': request})
     return Response(data=user_serializer.data)
 
 
@@ -159,3 +164,24 @@ def upload_profile_img_done(request):
 
     ser = UserProfileSerializer(request.user)
     return Response(data=ser.data)
+
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def upload_profile_img(request):
+    bucket_name = 'jb-eve'
+    file_stream = request.FILES['file'].file
+    _, ext = os.path.splitext(request.FILES['file'].name)
+
+    object_name = f"profile_img_{request.user.id}{ext}"
+
+    credentials = service_account.Credentials.from_service_account_file(
+        '/Users/valeria/Documents/keys/jb-eve-service-account-key.json')
+
+    storage_client = storage.Client(credentials=credentials)
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(object_name)
+    blob.upload_from_file(file_stream)
+
+    return Response()

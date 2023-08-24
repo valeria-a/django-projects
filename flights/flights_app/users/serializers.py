@@ -17,6 +17,15 @@ class ExtendedTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
         return token
 
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        data['username'] = self.user.username
+        return data
+
+    def to_representation(self, instance):
+        obj = super().to_representation(instance)
+        return obj
+
 
 
 class UserProfileSerializer(ModelSerializer):

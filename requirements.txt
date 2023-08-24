@@ -9,3 +9,4 @@ boto3
 google-auth
 requests
 gunicorn
+google-cloud-storage
