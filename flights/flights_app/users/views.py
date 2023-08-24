@@ -174,7 +174,7 @@ def upload_profile_img(request):
     file_stream = request.FILES['file'].file
     _, ext = os.path.splitext(request.FILES['file'].name)
 
-    object_name = f"profile_img_{request.user.id}{ext}"
+    object_name = f"profile_img_{uuid.uuid4()}{ext}"
 
     credentials = service_account.Credentials.from_service_account_file(
         '/Users/valeria/Documents/keys/jb-eve-service-account-key.json')
