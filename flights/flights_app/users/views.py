@@ -173,8 +173,6 @@ def upload_profile_img_done(request):
 @permission_classes([IsAuthenticated])
 def upload_profile_img(request):
 
-
-
     bucket_name = 'jb-eve'
     file_stream = request.FILES['file'].file
     _, ext = os.path.splitext(request.FILES['file'].name)

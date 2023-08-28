@@ -20,4 +20,5 @@ urlpatterns = [
     path('api/flights/', include('flights_app.flights.urls')),
     path('api/orders/', include('flights_app.orders.urls')),
     path('api/users/', include('flights_app.users.urls')),
+    path('api/boarding_passes/', include('flights_app.boarding_passes.urls')),
 ]

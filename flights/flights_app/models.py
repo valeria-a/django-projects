@@ -71,3 +71,13 @@ class Order(models.Model):
     class Meta:
         db_table = 'orders'
         ordering = ['id']
+
+
+class BoardingPass(models.Model):
+
+    user = models.ForeignKey(User, on_delete=models.RESTRICT, related_name='boarding_passes')
+    flight = models.ForeignKey(Flight, on_delete=models.RESTRICT, related_name='boarding_passes')
+    url = models.CharField(max_length=512)
+
+    class Meta:
+        db_table = 'boarding_passes'
