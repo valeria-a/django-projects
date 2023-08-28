@@ -1,10 +1,12 @@
+import io
+import mimetypes
 import os.path
 import uuid
 from pprint import pprint
 
 import boto3 as boto3
 from django.contrib.auth.models import User
-from django.http import JsonResponse
+from django.http import JsonResponse, FileResponse
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -170,6 +172,9 @@ def upload_profile_img_done(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def upload_profile_img(request):
+
+
+
     bucket_name = 'jb-eve'
     file_stream = request.FILES['file'].file
     _, ext = os.path.splitext(request.FILES['file'].name)
@@ -184,4 +189,24 @@ def upload_profile_img(request):
     blob = bucket.blob(object_name)
     blob.upload_from_file(file_stream)
 
-    return Response()
+    # update the db with the new profile img
+    request.user.profile.img_url = blob.public_url
+    request.user.profile.save()
+
+    userSerializer = UserProfileSerializer(request.user)
+    return Response(userSerializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def download_file(request):
+    bucket_name = 'jb-eve'
+    credentials = service_account.Credentials.from_service_account_file(
+        '/Users/valeria/Documents/keys/jb-eve-service-account-key.json')
+
+    storage_client = storage.Client(credentials=credentials)
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob('cat-2934720_1280.jpg')
+    file_obj = io.BytesIO()
+    blob.download_to_file(file_obj)
+    file_obj.seek(0)
+    return FileResponse(file_obj, as_attachment=True, filename='cat-2934720_1280.jpg')
