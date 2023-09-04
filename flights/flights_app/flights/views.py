@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, action
 from rest_framework.viewsets import ModelViewSet
 
 from flights_app.flights import serializers
@@ -16,6 +16,10 @@ class FlightsViewSet(ModelViewSet):
     queryset = models.Flight.objects.all()
     filterset_class = FlightsFilterSet
     permission_classes = (FlightsPermission, )
+
+    @action(['GET'],detail=False)
+    def stats(self):
+        self.get_queryset()
 
 
 @api_view(['GET'])

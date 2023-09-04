@@ -84,6 +84,9 @@ def google_login(request):
     CLIENT_ID = '872794659630-ehu55i6a7fbglef45mjno5pgjv7qeab9.apps.googleusercontent.com'
     try:
         idinfo = id_token.verify_oauth2_token(google_jwt, requests.Request(), CLIENT_ID)
+
+        print('idinfo from google:', idinfo)
+
         email = idinfo['email']
         try:
             user = User.objects.get(email=email)
@@ -208,3 +211,5 @@ def download_file(request):
     blob.download_to_file(file_obj)
     file_obj.seek(0)
     return FileResponse(file_obj, as_attachment=True, filename='cat-2934720_1280.jpg')
+
+
