@@ -6,7 +6,7 @@ django-filter
 djangorestframework-simplejwt
 django-countries
 django-cors-headers
-boto3
+# boto3
 google-auth
 requests
 gunicorn
